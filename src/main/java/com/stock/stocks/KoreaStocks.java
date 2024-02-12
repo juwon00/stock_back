@@ -1,4 +1,4 @@
-package com.stock.stockList;
+package com.stock.stocks;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @EntityListeners(AuditingEntityListener.class)
-public class KoreaStockList {
+public class KoreaStocks {
 
     @Id
     @GeneratedValue
-    @Column(name = "korea_stock_list_id")
+    @Column(name = "korea_stocks_id")
     private Long id;
 
     private String name;
@@ -31,5 +31,5 @@ public class KoreaStockList {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private LocalDateTime updatedAt;
 }
