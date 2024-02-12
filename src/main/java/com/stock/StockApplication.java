@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing  // 자동으로 createdAt, modifiedAt 사용하기 위해
 public class StockApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(StockApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(StockApplication.class, args);
+    }
 
 }
