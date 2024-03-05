@@ -1,5 +1,6 @@
 package com.stock.stocks;
 
+import com.stock.ohlcv.kospi.KospiOhlcv;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +37,9 @@ public class KoreaStocks {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "koreaStocks")
+    private List<KospiOhlcv> kospiOhlcvs = new ArrayList<>();
 
     public KoreaStocks(String code, String name, String market) {
         this.name = name;
