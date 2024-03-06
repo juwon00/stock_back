@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
-@Component  // 주석처리 함으로서 서버가 실행될 때 작동하지 않음
+@Component  // 주석처리 하면 서버가 실행될 때 작동하지 않음
 @RequiredArgsConstructor
 public class ApplicationRunnerBean implements ApplicationRunner {
 
@@ -31,8 +31,49 @@ public class ApplicationRunnerBean implements ApplicationRunner {
 
 //        KoreaStocksConfig();
 //        getOhlcv("005930");
+        getTodayOhlcv("005930");
 
         log.info("finish");
+    }
+
+
+    private void getTodayOhlcv(String code) throws IOException {
+
+        String pythonScriptPath = "py/test.py";
+
+        // 파이썬 프로세스 실행
+        ProcessBuilder pb = new ProcessBuilder("python3", pythonScriptPath);
+        Process process = pb.start();
+
+        // 1. 오류 메시지 출력
+        InputStream errorStream = process.getErrorStream();
+        BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
+        String errorline;
+        while ((errorline = errorReader.readLine()) != null) {
+            System.out.println("errorline = " + errorline);
+        }
+
+
+        // 파이썬 프로세스의 출력을 읽기 위한 BufferedReader 생성
+        InputStream inputStream = process.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+
+        // 파이썬 프로세스의 출력을 읽어와서 자바에서 출력
+        String line;
+        while ((line = reader.readLine()) != null) {
+            log.info(line);
+        }
+
+        // 프로세스가 끝날 때까지 기다림
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // 프로세스 종료
+        process.destroy();
     }
 
     private void getOhlcv(String code) throws IOException {
