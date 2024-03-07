@@ -1,11 +1,13 @@
 import FinanceDataReader as fdr
-from datetime import datetime, timedelta
+from datetime import datetime
+import sys
+
+data = sys.argv[1:]
+code = data[0]
 
 now = datetime.now().date()
 
-stock = fdr.DataReader("005930", now - timedelta(days=0))
-
-print(stock)
+stock = fdr.DataReader(code, now)
 
 open = stock.iloc[0, 0]
 high = stock.iloc[0, 1]
