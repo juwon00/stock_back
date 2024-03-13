@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class KospiOhlcv {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "kospi_ohlcv_id")
     private Long id;
 

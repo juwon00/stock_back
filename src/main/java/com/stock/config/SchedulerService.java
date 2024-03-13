@@ -25,7 +25,7 @@ public class SchedulerService {
     private final KospiOhlcvRepository kospiOhlcvRepository;
     private final KoreaStocksRepository koreaStocksRepository;
 
-    @Scheduled(cron = "0 10 18 * * *") // 매일 18시 10분 마다 실행
+    @Scheduled(cron = "0 10 18 * * 1-5", zone = "Asia/Seoul") // 매일 18시 10분 마다 실행
     public void getTodayOhlcv() throws IOException {
         log.info("scheduler start");
         String code = "005930";

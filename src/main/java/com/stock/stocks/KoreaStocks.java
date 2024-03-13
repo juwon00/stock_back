@@ -19,7 +19,7 @@ import java.util.List;
 public class KoreaStocks {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "korea_stocks_id")
     private Long id;
 

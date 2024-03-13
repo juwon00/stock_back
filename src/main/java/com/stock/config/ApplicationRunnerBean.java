@@ -16,8 +16,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Component  // 주석처리 하면 서버가 실행될 때 작동하지 않음
@@ -33,59 +31,13 @@ public class ApplicationRunnerBean implements ApplicationRunner {
 
 //        KoreaStocksConfig();
 //        getOhlcv("005930");
-//        getTodayOhlcv("005930");
 
         log.info("finish");
     }
 
 
-    private void getTodayOhlcv(String code) throws IOException {
-
-        String pythonScriptPath = "py/get_today_ohlcv.py";
-
-        // 파이썬 프로세스 실행
-        ProcessBuilder pb = new ProcessBuilder("python3", pythonScriptPath, code);
-        Process process = pb.start();
-
-        // 1. 오류 메시지 출력
-        InputStream errorStream = process.getErrorStream();
-        BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorStream));
-        String errorline;
-        while ((errorline = errorReader.readLine()) != null) {
-            System.out.println("errorline = " + errorline);
-        }
-
-        // 파이썬 프로세스의 출력을 읽기 위한 BufferedReader 생성
-        InputStream inputStream = process.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-
-        // 파이썬 프로세스의 출력을 읽어와서 자바에서 출력
-        List<Integer> todayStock = new ArrayList<>();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            log.info(line);
-            todayStock.add(Integer.parseInt(line));
-        }
-        if (todayStock.size() >= 5) {
-            for (Integer s : todayStock) {
-                System.out.println("stock = " + s);
-            }
-        }
-
-        // 프로세스가 끝날 때까지 기다림
-        try {
-            process.waitFor();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // 프로세스 종료
-        process.destroy();
-    }
-
     private void getOhlcv(String code) throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream("/krx/kospi/" + code + "_2024_03_04.csv");
+        InputStream inputStream = getClass().getResourceAsStream("/krx/kospi/" + code + "_2024_03_13.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String line;
@@ -111,7 +63,7 @@ public class ApplicationRunnerBean implements ApplicationRunner {
     }
 
     private void KoreaStocksConfig() throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream("/krx/KRX_2024_02_13.csv");
+        InputStream inputStream = getClass().getResourceAsStream("/krx/KRX_2024_03_13.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String line;

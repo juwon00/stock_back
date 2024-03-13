@@ -1,9 +1,6 @@
 package com.stock.ohlcv.konex;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -13,7 +10,7 @@ import java.time.LocalDate;
 public class KonexOhlcv {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "kospi_ohlcv_id")
     private Long id;
 
