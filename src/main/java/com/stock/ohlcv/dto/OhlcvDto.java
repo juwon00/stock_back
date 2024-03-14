@@ -1,4 +1,4 @@
-package com.stock.ohlcv.kospi.dto;
+package com.stock.ohlcv.dto;
 
 
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
-package com.stock.ohlcv.kospi;
+package com.stock.ohlcv;
 
-import com.stock.ohlcv.kospi.dto.OhlcvDto;
+import com.stock.ohlcv.dto.OhlcvDto;
 import com.stock.status.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
-package com.stock.ohlcv.kospi;
+package com.stock.ohlcv;
 
-import com.stock.ohlcv.kospi.dto.OhlcvDto;
+import com.stock.ohlcv.dto.OhlcvDto;
 import com.stock.stocks.KoreaStocks;
 import com.stock.stocks.KoreaStocksRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.List;
 public class OhlcvService {
 
     private final KoreaStocksRepository koreaStocksRepository;
-    private final KospiOhlcvRepository kospiOhlcvRepository;
+    private final OhlcvRepository ohlcvRepository;
 
     public List<OhlcvDto> getStocks(String value) {
         KoreaStocks stock;
@@ -24,10 +24,10 @@ public class OhlcvService {
         } else {
             stock = koreaStocksRepository.findByName(value);
         }
-        return kospiOhlcvRepository.findAllByKoreaStocks(stock).stream().map(this::convertToDto).toList();
+        return ohlcvRepository.findAllByKoreaStocks(stock).stream().map(this::convertToDto).toList();
     }
 
-    private OhlcvDto convertToDto(KospiOhlcv kospiOhlcv) {
+    private OhlcvDto convertToDto(Ohlcv kospiOhlcv) {
         return new OhlcvDto(kospiOhlcv.getOpen(), kospiOhlcv.getHigh(), kospiOhlcv.getLow(), kospiOhlcv.getClose(), kospiOhlcv.getVolume(), kospiOhlcv.getDate());
     }
 }

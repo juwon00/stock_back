@@ -1,6 +1,6 @@
 package com.stock.stocks;
 
-import com.stock.ohlcv.kospi.KospiOhlcv;
+import com.stock.ohlcv.Ohlcv;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +39,7 @@ public class KoreaStocks {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "koreaStocks")
-    private List<KospiOhlcv> kospiOhlcvs = new ArrayList<>();
+    private List<Ohlcv> kospiOhlcvs = new ArrayList<>();
 
     public KoreaStocks(String code, String name, String market) {
         this.name = name;

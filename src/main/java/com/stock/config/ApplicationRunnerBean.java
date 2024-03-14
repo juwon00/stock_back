@@ -1,7 +1,7 @@
 package com.stock.config;
 
-import com.stock.ohlcv.kospi.KospiOhlcv;
-import com.stock.ohlcv.kospi.KospiOhlcvRepository;
+import com.stock.ohlcv.Ohlcv;
+import com.stock.ohlcv.OhlcvRepository;
 import com.stock.stocks.KoreaStocks;
 import com.stock.stocks.KoreaStocksRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 public class ApplicationRunnerBean implements ApplicationRunner {
 
     private final KoreaStocksRepository koreaStocksRepository;
-    private final KospiOhlcvRepository kospiOhlcvRepository;
+    private final OhlcvRepository ohlcvRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -56,8 +56,8 @@ public class ApplicationRunnerBean implements ApplicationRunner {
 
                 KoreaStocks koreaStocks = koreaStocksRepository.findByCode(code);
                 System.out.println("koreaStocks = " + koreaStocks + koreaStocks.getName() + koreaStocks.getCode());
-                KospiOhlcv kospiOhlcv = new KospiOhlcv(date, open, high, low, close, volume, koreaStocks);
-                kospiOhlcvRepository.save(kospiOhlcv);
+                Ohlcv kospiOhlcv = new Ohlcv(date, open, high, low, close, volume, koreaStocks);
+                ohlcvRepository.save(kospiOhlcv);
             }
         }
     }

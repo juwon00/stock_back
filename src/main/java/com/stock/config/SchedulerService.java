@@ -1,7 +1,7 @@
 package com.stock.config;
 
-import com.stock.ohlcv.kospi.KospiOhlcv;
-import com.stock.ohlcv.kospi.KospiOhlcvRepository;
+import com.stock.ohlcv.Ohlcv;
+import com.stock.ohlcv.OhlcvRepository;
 import com.stock.stocks.KoreaStocks;
 import com.stock.stocks.KoreaStocksRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SchedulerService {
 
-    private final KospiOhlcvRepository kospiOhlcvRepository;
+    private final OhlcvRepository ohlcvRepository;
     private final KoreaStocksRepository koreaStocksRepository;
 
     @Scheduled(cron = "0 10 18 * * 1-5", zone = "Asia/Seoul") // 매일 18시 10분 마다 실행
@@ -38,8 +38,8 @@ public class SchedulerService {
         if (todayOhlcv.size() >= 5) {
             LocalDate now = LocalDate.now();
             KoreaStocks koreaStocks = koreaStocksRepository.findByCode(code);
-            KospiOhlcv kospiOhlcv = new KospiOhlcv(now, todayOhlcv.get(0), todayOhlcv.get(1), todayOhlcv.get(2), todayOhlcv.get(3), todayOhlcv.get(4), koreaStocks);
-            kospiOhlcvRepository.save(kospiOhlcv);
+            Ohlcv ohlcv = new Ohlcv(now, todayOhlcv.get(0), todayOhlcv.get(1), todayOhlcv.get(2), todayOhlcv.get(3), todayOhlcv.get(4), koreaStocks);
+            ohlcvRepository.save(ohlcv);
         } else {
             log.info("todayOhlcv 사이즈가 5보다 작습니다.");
         }

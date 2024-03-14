@@ -1,4 +1,4 @@
-package com.stock.ohlcv.kospi;
+package com.stock.ohlcv;
 
 import com.stock.stocks.KoreaStocks;
 import jakarta.persistence.*;
@@ -10,11 +10,11 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor
-public class KospiOhlcv {
+public class Ohlcv {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "kospi_ohlcv_id")
+    @Column(name = "ohlcv_id")
     private Long id;
 
     private LocalDate date;
@@ -33,7 +33,7 @@ public class KospiOhlcv {
     @JoinColumn(name = "korea_stocks_id")
     private KoreaStocks koreaStocks;
 
-    public KospiOhlcv(LocalDate date, int open, int high, int low, int close, int volume, KoreaStocks koreaStocks) {
+    public Ohlcv(LocalDate date, int open, int high, int low, int close, int volume, KoreaStocks koreaStocks) {
         this.date = date;
         this.open = open;
         this.high = high;
