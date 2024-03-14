@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 public interface KoreaStocksRepository extends JpaRepository<KoreaStocks, Long> {
 
     KoreaStocks findByCode(String code);
+
+    KoreaStocks findByName(String name);
 }
