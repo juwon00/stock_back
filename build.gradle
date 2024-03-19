@@ -32,6 +32,8 @@ dependencies {
     // sql 쿼리 보기 위해
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 
+    implementation 'com.auth0:java-jwt:4.0.0'
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 }
 
 tasks.named('test') {
