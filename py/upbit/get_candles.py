@@ -2,7 +2,7 @@ import numpy as np
 import requests
 import json
 import talib
-import math
+import time
 
 
 def send_api(path, method):
@@ -16,115 +16,105 @@ def send_api(path, method):
             response = requests.get(url, headers=headers)
         elif method == 'POST':
             response = requests.post(url, headers=headers, data=json.dumps(body, ensure_ascii=False, indent="\t"))
-        print("response status %r" % response.status_code)
+        # print("response status %r" % response.status_code)
         # print(json.dumps(response.json(), indent=3))
         return response.json()
     except Exception as ex:
         print(ex)
 
 
-total_rate = 0
-buy = False
-purchase_price = 0
-for date in range(16, 27):  # i일 부터 j일 까지 데이터
-    print(date)
-    if 1 <= date < 10:
-        d = "0" + str(date)
+# 2017-10-01 ~ 2024-03-22 까지의 데이터 수집
+
+open_arr = np.array([])
+high_arr = np.array([])
+low_arr = np.array([])
+close_arr = np.array([])
+volume_arr = np.array([])
+time_30_arr = np.array([])
+
+for year in range(24, 25):  # 기본 (17, 25)
+    print("year", year)
+
+    if year == 17:
+        s = 10
     else:
-        d = str(date)
+        s = 1
 
-    # 15:00:00 -> 한국시간으로 00:00:00
-    response = send_api("/candles/minutes/30?market=KRW-BTC&count=200&to=2024-02-" + d + " 15:00:00", "GET")[::-1]
-    # print(json.dumps(response, indent=3))
+    for month in range(3, 4):  # 기본 (s, 13)
+        if 1 <= month < 10:
+            m = "0" + str(month)
+        else:
+            m = str(month)
+        print("month", m)
 
-    # 호출 예시
-    # response = send_api("/candles/minutes/15?market=KRW-BTC&count=200&to=2024-03-18 15:00:00", "GET")[::-1]
-    # print(json.dumps(response, indent=3))
+        odd_month = [1, 3, 5, 7, 9, 11]
+        even_month = [4, 6, 8, 10, 12]
 
-    open = np.array([item["opening_price"] for item in response])
-    high = np.array([item["high_price"] for item in response])
-    low = np.array([item["low_price"] for item in response])
-    close = np.array([item["trade_price"] for item in response])
-    volume = np.array([item["candle_acc_trade_volume"] for item in response])
-    time = np.array([item["candle_date_time_kst"] for item in response])
+        if month in odd_month:
+            end = 32
+        elif month in even_month:
+            end = 31
+        elif year == 20 or year == 24:
+            end = 30
+        else:
+            end = 29
 
-    macd, signal, macd_hist = np.round(talib.MACD(close, fastperiod=12, slowperiod=26, signalperiod=9), decimals=2)
-    adx = np.round(talib.ADX(high=high, low=low, close=close, timeperiod=14), decimals=2)
-    rsi = np.round(talib.RSI(close, timeperiod=14), decimals=2)
-    slowk, slowd = np.round(talib.STOCH(high, low, close, fastk_period=14, slowk_period=3, slowd_period=3), decimals=2)
+        for date in range(1, 6):  # 기본 (1, end)
+            if year == 24 and month == 3 and date >= 23:
+                break
+            if year == 24 and month >= 4:
+                break
 
+            time.sleep(0.1)
+            if 1 <= date < 10:
+                d = "0" + str(date)
+            else:
+                d = str(date)
+            print("date", date)
 
-    # def macd_turn(i, macd):
-    #     if macd[i - 4] > macd[i - 3] > macd[i - 2] > macd[i - 1] and macd[i - 1] < macd[i]:
-    #         print("macd1")
-    #         return True
-    #     elif macd[i - 4] > macd[i - 3] > macd[i - 2] and macd[i - 2] < macd[i - 1] < macd[i]:
-    #         print("macd2")
-    #         return True
-    #     # elif macd[i - 4] > macd[i - 3] > macd[i - 2] > macd[i - 1] > macd[i]:
-    #     #     print("macd3")
-    #     #     return True
-    #     return False
-    #
-    #
-    # def adx_turn(i, adx):
-    #     if adx[i - 4] < adx[i - 3] < adx[i - 2] < adx[i - 1] and adx[i - 1] > adx[i]:
-    #         print("adx1")
-    #         return True
-    #     elif adx[i - 4] < adx[i - 3] < adx[i - 2] and adx[i - 2] > adx[i - 1] > adx[i]:
-    #         print("adx2")
-    #         return True
-    #     return False
-    #
-    #
-    # def buy_condition(i, buy, macd, signal, adx, rsi, slowk, time, volume):
-    #     if not buy and macd_turn(i, macd) and adx_turn(i, adx) and adx[i] > 30:
-    #         return True
-    #     return False
-    #
-    #
-    # def sell_condition(i, buy, macd, signal, macd_hist, adx, rsi, slowk, time, volume):
-    #     if buy and macd[i - 1] > signal[i - 1] and macd[i] <= signal[i]:
-    #         return True
-    #
-    #     return False
+            # 15:00:00 -> 한국시간으로 00:00:00
+            response = send_api(
+                "/candles/minutes/30?market=KRW-BTC&count=48&to=20" + str(year) + "-" + m + "-" + d + " 15:00:00",
+                "GET")[
+                       ::-1]
+            # print(json.dumps(response, indent=3))
 
-    def buy_condition(i, buy, macd, signal, macd_hist, adx, rsi, slowk, time, volume):
-        if not buy and macd_hist[i - 1] < 0 and macd_hist[i] > 0:
-            return True
+            open = [item["opening_price"] for item in response]
+            high = [item["high_price"] for item in response]
+            low = [item["low_price"] for item in response]
+            close = [item["trade_price"] for item in response]
+            volume = [item["candle_acc_trade_volume"] for item in response]
+            time_30 = [item["candle_date_time_kst"] for item in response]
 
-        return False
+            open_arr = np.append(open_arr, open)
+            high_arr = np.append(high_arr, high)
+            low_arr = np.append(low_arr, low)
+            close_arr = np.append(close_arr, close)
+            volume_arr = np.append(volume_arr, volume)
+            time_30_arr = np.append(time_30_arr, time_30)
 
+print(close_arr)
 
-    def sell_condition(i, buy, macd, signal, macd_hist, adx, rsi, slowk, time, volume):
-        if buy and macd_hist[i] - macd_hist[i - 1] < 0:
-            return True
+sma_60 = np.round(talib.SMA(close_arr, timeperiod=60), decimals=1)
+sma_120 = np.round(talib.SMA(close_arr, timeperiod=120), decimals=1)
+sma_200 = np.round(talib.SMA(close_arr, timeperiod=200), decimals=1)
+upper, middle, lower = np.round(talib.BBANDS(close_arr, timeperiod=20), decimals=1)
+macd, signal, macd_hist = np.round(talib.MACD(close_arr, fastperiod=12, slowperiod=26, signalperiod=9), decimals=1)
+adx = np.round(talib.ADX(high=high_arr, low=low_arr, close=close_arr, timeperiod=14), decimals=1)
+rsi = np.round(talib.RSI(close_arr, timeperiod=14), decimals=1)
+slowk, slowd = np.round(talib.STOCH(high_arr, low_arr, close_arr, fastk_period=14, slowk_period=3, slowd_period=3),
+                        decimals=1)
 
-        return False
+# for i in range(len(close_arr)):
+#     print(time_30_arr[i], open_arr[i], high_arr[i], low_arr[i], close_arr[i], volume_arr[i], sma_60[i], sma_120[i],
+#           sma_200[i], upper[i], middle[i], lower[i], macd[i], signal[i], macd_hist[i], adx[i], rsi[i], slowk[i],
+#           slowd[i])
 
+result = np.vstack((time_30_arr, open_arr, high_arr, low_arr, close_arr, volume_arr, sma_60, sma_120, sma_200, upper,
+                    middle, lower, macd, signal, macd_hist, adx, rsi, slowk, slowd))
+print(result)
 
-    rate_of_return = 0
-    for i in range(152, len(macd)):
-        # print(close[i], "    ", macd[i], "   ", signal[i], "    ", macd_hist[i], "    ", adx[i], "    ", rsi[i], "    ",
-        #       slowk[i], "    ", time[i], "    ", i)
-        if math.isnan(macd[i - 4]):
-            print("nan")
-            continue
+result = result.T
+print(result)
 
-        if buy_condition(i, buy, macd, signal, macd_hist, adx, rsi, slowk, time, volume):
-            print()
-            print(time[i], "find", close[i], "   ")
-            buy = True
-            purchase_price = close[i]
-
-        if sell_condition(i, buy, macd, signal, macd_hist, adx, rsi, slowk, time, volume):
-            print()
-            print(time[i], "sell", close[i], "   ")
-            buy = False
-            rate_of_return += ((close[i] / purchase_price) - 1) * 100 - 0.1  # 매수 매도 수수료 각 0.05%
-            print(rate_of_return)
-            print()
-
-    total_rate += rate_of_return
-
-print("==== total_rate: ", total_rate, "====")
+np.savetxt('data.csv', result, delimiter=',', fmt='%s')
