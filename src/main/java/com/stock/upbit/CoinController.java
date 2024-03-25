@@ -2,6 +2,9 @@ package com.stock.upbit;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.stock.upbit.dto.CoinDTO;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -14,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/upbit")
+@RequiredArgsConstructor
+@Slf4j
 public class CoinController {
 
     @Value("${upbit.access-key}")
@@ -26,6 +32,8 @@ public class CoinController {
     @Value("${upbit.secret-key}")
     String secretKey;
     String serverUrl = "https://api.upbit.com/v1";
+
+    private final CoinService coinService;
 
     // 전체 계좌 조회
     @GetMapping("/get")
@@ -52,4 +60,14 @@ public class CoinController {
         }
     }
 
+
+    @GetMapping("/coins")
+    public List<CoinDTO> getCoins() {
+        return coinService.getCoins();
+    }
+
+    @GetMapping("/coins/back-test")
+    public String getCoinBackTest() {
+        return "1";
+    }
 }

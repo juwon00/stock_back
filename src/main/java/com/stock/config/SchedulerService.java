@@ -38,19 +38,19 @@ public class SchedulerService {
         log.info(code + "save");
     }
 
-    @Scheduled(cron = "0 35 * * * *", zone = "Asia/Seoul") // 매일 **시 35분 마다 실행 -> **시 00분 데이터 저장
-    public void getCoin1() throws IOException {
-        log.info("coin start");
-        coinSave();
-        log.info("coin finish");
-    }
-
-    @Scheduled(cron = "0 5 * * * *", zone = "Asia/Seoul") // 매일 **시 5분마다 실행 -> **-1시 30분 데이터 저장
-    public void getCoin2() throws IOException {
-        log.info("coin start");
-        coinSave();
-        log.info("coin finish");
-    }
+//    @Scheduled(cron = "0 35 * * * *", zone = "Asia/Seoul") // 매일 **시 35분 마다 실행 -> **시 00분 데이터 저장
+//    public void getCoin1() throws IOException {
+//        log.info("coin start");
+//        coinSave();
+//        log.info("coin finish");
+//    }
+//
+//    @Scheduled(cron = "0 5 * * * *", zone = "Asia/Seoul") // 매일 **시 5분마다 실행 -> **-1시 30분 데이터 저장
+//    public void getCoin2() throws IOException {
+//        log.info("coin start");
+//        coinSave();
+//        log.info("coin finish");
+//    }
 
     private void coinSave() throws IOException {
         String pythonScriptPath = "py/upbit/get_today_coin_data.py";
