@@ -59,8 +59,8 @@ for year in range(24, 25):  # 기본 (17, 25)
         else:
             end = 29
 
-        for date in range(1, 6):  # 기본 (1, end)
-            if year == 24 and month == 3 and date >= 23:
+        for date in range(17, 25):  # 기본 (1, end)
+            if year == 24 and month == 3 and date >= 25:
                 break
             if year == 24 and month >= 4:
                 break

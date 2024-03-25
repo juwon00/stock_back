@@ -2,6 +2,7 @@ import numpy as np
 import requests
 import json
 import talib
+from datetime import datetime, timedelta
 
 
 def send_api(path, method):
@@ -20,8 +21,10 @@ def send_api(path, method):
         print(ex)
 
 
-d = "23"
-response = send_api("/candles/minutes/1?market=KRW-BTC&count=200&to=2024-03-" + d + " 15:00:00", "GET")[::-1]
+now = datetime.now() - timedelta(hours=9.5)
+now = now.strftime("%Y-%m-%d %H:%M:%S")
+response = send_api("/candles/minutes/30?market=KRW-BTC&count=200"
+                    "&to=" + now, "GET")[::-1]
 
 open = np.array([item["opening_price"] for item in response])
 high = np.array([item["high_price"] for item in response])

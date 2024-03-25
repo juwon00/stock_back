@@ -40,7 +40,6 @@ public class ApplicationRunnerBean implements ApplicationRunner {
         log.info("finish");
     }
 
-
     private void getOhlcv(String code) throws IOException {
         InputStream inputStream = getClass().getResourceAsStream("/csv/krx/kospi/" + code + "_2024_03_13.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -87,7 +86,7 @@ public class ApplicationRunnerBean implements ApplicationRunner {
     }
 
     private void getCoin() throws IOException {
-        InputStream inputStream = getClass().getResourceAsStream("/csv/upbit/data_2021_03_04~2024_03_22.csv");
+        InputStream inputStream = getClass().getResourceAsStream("/csv/upbit/data_2024_03_23~2024_03_24.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         String line;
