@@ -1,8 +1,9 @@
+import json
+from datetime import datetime, timedelta
+
 import numpy as np
 import requests
-import json
 import talib
-from datetime import datetime, timedelta
 
 
 def send_api(path, method):
