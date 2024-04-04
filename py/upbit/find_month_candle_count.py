@@ -12,6 +12,7 @@ with open(csv_file, 'r', newline='') as file:
         # 각 열의 데이터 추출하여 해당 리스트에 저장
         time_30.append(row[0])
 
+
 # 날짜를 파싱하여 datetime 객체로 변환
 datetime_list = [datetime.fromisoformat(time_str) for time_str in time_30]
 

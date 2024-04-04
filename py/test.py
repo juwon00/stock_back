@@ -1,5 +1,6 @@
-import FinanceDataReader as fdr
 from datetime import datetime, timedelta
+
+import FinanceDataReader as fdr
 
 now = datetime.now().date()
 

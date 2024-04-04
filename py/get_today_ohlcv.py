@@ -1,6 +1,7 @@
-import FinanceDataReader as fdr
-from datetime import datetime
 import sys
+from datetime import datetime
+
+import FinanceDataReader as fdr
 
 data = sys.argv[1:]
 code = data[0]
