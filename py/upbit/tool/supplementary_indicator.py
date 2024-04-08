@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+import pandas_ta
 import talib
 
 
@@ -27,3 +29,14 @@ def cal_vw_macd(close, volume, short_term, long_term, signal):
     vw_macd_signal = [0] * (long_term - 1) + cal_vwma(vw_macd[long_term - 1:], volume, signal)
     vw_macd_hist = [round(x - y, 1) if x != 0 and y != 0 else 0 for x, y in zip(vw_macd, vw_macd_signal)]
     return vw_macd, vw_macd_signal, vw_macd_hist
+
+
+def cal_super_trend(high, low, close, length, multiplier):
+    df = pd.DataFrame()
+    high_series = pd.Series(high, name='high')
+    low_series = pd.Series(low, name='high')
+    close_series = pd.Series(close, name='high')
+
+    df[['trend', 'direction', 'long', 'short']] = pandas_ta.supertrend(high_series, low_series, close_series,
+                                                                       length=length, multiplier=multiplier)
+    return df.values.tolist()

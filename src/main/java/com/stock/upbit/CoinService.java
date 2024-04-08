@@ -105,7 +105,7 @@ public class CoinService {
 
     public void buy(String balance) throws NoSuchAlgorithmException {
 
-        float balanceF = Float.parseFloat(balance) / 2;
+        float balanceF = (float) (Float.parseFloat(balance) * 0.97);
         String balanceS = Float.toString(balanceF);
 
         HashMap<String, String> params = new HashMap<>();
