@@ -40,7 +40,7 @@ for year in range(24, 25):  # 기본 (17, 25)
     else:
         s = 1
 
-    for month in range(3, 4):  # 기본 (s, 13)
+    for month in range(4, 5):  # 기본 (s, 13)
         if 1 <= month < 10:
             m = "0" + str(month)
         else:
@@ -60,7 +60,7 @@ for year in range(24, 25):  # 기본 (17, 25)
             end = 29
 
         for date in range(1, 32):  # 기본 (1, end)
-            if year == 24 and month == 4 and date >= 2:
+            if year == 24 and month == 4 and date >= 10:
                 break
             if year == 24 and month >= 5:
                 break
