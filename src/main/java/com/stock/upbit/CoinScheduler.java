@@ -1,5 +1,6 @@
 package com.stock.upbit;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,37 +18,49 @@ import java.security.NoSuchAlgorithmException;
 public class CoinScheduler {
 
     private final CoinService coinService;
+    private final CoinRepository coinRepository;
 
-    @Scheduled(cron = "02 00 * * * *", zone = "Asia/Seoul")  // 매시 00분 02초마다
+    @Transactional
+    @Scheduled(cron = "0 0 0/2 * * *", zone = "Asia/Seoul")  // 00시 00분 02초마다
     public void btcScheduler1() throws IOException, NoSuchAlgorithmException {
-        log.info("btc start");
         String status = checkSuperTrend();
-        if (status.equals("buy")) {
-            String balance = coinService.getBalance();
-            coinService.buy(balance);
-            log.info("buy");
-        } else if (status.equals("sell")) {
-            String balance = coinService.getBalance();
-            coinService.sell(balance);
-            log.info("sell");
-        }
-        log.info("btc finish");
-    }
 
-    @Scheduled(cron = "02 30 * * * *", zone = "Asia/Seoul")  // 매시 30분 02초마다
-    public void btcScheduler2() throws IOException, NoSuchAlgorithmException {
-        log.info("btc start");
-        String status = checkSuperTrend();
-        if (status.equals("buy")) {
-            String balance = coinService.getBalance();
-            coinService.buy(balance);
-            log.info("buy");
+        if (status.contains("buy")) {
+
+            Coin coin = coinRepository.findById(1L).get();
+            double currentPrice = Float.parseFloat(status.split(" ")[1]);
+
+            if (!coin.isBuy()) {
+                coinService.buy(coinService.getBalance());
+                coinRepository.updateBuy(currentPrice);
+                log.info("buy");
+            } else {
+                log.info("buy error");
+            }
         } else if (status.equals("sell")) {
-            String balance = coinService.getBalance();
-            coinService.sell(balance);
-            log.info("sell");
+
+            Coin coin = coinRepository.findById(1L).get();
+
+            if (coin.isBuy()) {
+                coinService.sell(coinService.getBalance());
+                coinRepository.updateSell();
+                log.info("sell");
+            } else {
+                log.info("sell error");
+            }
+        } else if (status.contains("hold")) {
+
+            Coin coin = coinRepository.findById(1L).get();
+            double currentPrice = Float.parseFloat(status.split(" ")[1]);
+
+            if (((currentPrice / coin.getPurchasePrice()) - 1) * 100 <= -3.2 && coin.isBuy()) {
+                coinService.sell(coinService.getBalance());
+                coinRepository.updateSell();
+                log.info("stop loss");
+            } else {
+                log.info("hold");
+            }
         }
-        log.info("btc finish");
     }
 
 

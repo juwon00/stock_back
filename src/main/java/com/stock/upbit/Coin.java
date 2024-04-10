@@ -14,4 +14,7 @@ public class Coin {
     @Column(name = "coin_id")
     private Long id;
 
+    private boolean isBuy;
+
+    private double purchasePrice;
 }

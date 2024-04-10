@@ -8,9 +8,9 @@ def split_data(data, n):
 
 
 # 데이터 처리 함수
-def process_data(data):
+def process_data(data, candle):
     # 데이터 분할
-    chunks = list(split_data(data, 8))
+    chunks = list(split_data(data, candle))
     dates_list, opens_list, highs_list, lows_list, closes_list, volumes_list = [], [], [], [], [], []
 
     for chunk in chunks:
@@ -42,14 +42,12 @@ def process_data(data):
     return dates_list, opens_list, highs_list, lows_list, closes_list, volumes_list
 
 
-# 파일 경로
-# file_path = '../data/data_2018~.csv'
-def minutes30_to_hours4(file_path):
+def minutes30_to_hours(file_path, candle):
     # 파일 읽기
     with open(file_path, 'r') as file:
         reader = csv.reader(file)
         data = list(reader)
 
     # 데이터 처리
-    dates, opens, highs, lows, closes, volumes = process_data(data)
+    dates, opens, highs, lows, closes, volumes = process_data(data, candle)
     return dates, opens, highs, lows, closes, volumes

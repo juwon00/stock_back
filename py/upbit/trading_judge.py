@@ -18,8 +18,8 @@ previous = super_trend[-2][1]
 current = super_trend[-1][1]
 
 if previous == current:
-    print("hold")
+    print("hold", close[-1])
 elif previous == 1 and current == -1:
     print("sell")
 elif previous == -1 and current == 1:
-    print("buy")
+    print("buy", close[-1])
