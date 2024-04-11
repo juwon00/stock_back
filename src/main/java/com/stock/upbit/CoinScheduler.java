@@ -3,60 +3,75 @@ package com.stock.upbit;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor
 public class CoinScheduler {
 
+    @Value("${discord.webhookURL}")
+    private String url;
+
     private final CoinService coinService;
     private final CoinRepository coinRepository;
 
     @Transactional
-    @Scheduled(cron = "0 0 0/2 * * *", zone = "Asia/Seoul")  // 00시 00분 02초마다
+    @Scheduled(cron = "2 0 0/2 * * *", zone = "Asia/Seoul")  // 00시 00분 02초마다
     public void btcScheduler1() throws IOException, NoSuchAlgorithmException {
+        LocalDateTime now = LocalDateTime.now();
         String status = checkSuperTrend();
 
         if (status.contains("buy")) {
 
             Coin coin = coinRepository.findById(1L).get();
-            double currentPrice = Float.parseFloat(status.split(" ")[1]);
+            double currentPrice = Double.parseDouble(status.split(" ")[1]);
 
             if (!coin.isBuy()) {
                 coinService.buy(coinService.getBalance());
                 coinRepository.updateBuy(currentPrice);
                 log.info("buy");
+                sendDiscord(now + " 매수 " + currentPrice);
             } else {
                 log.info("buy error");
             }
-        } else if (status.equals("sell")) {
+        } else if (status.contains("sell")) {
 
             Coin coin = coinRepository.findById(1L).get();
+            double currentPrice = Double.parseDouble(status.split(" ")[1]);
 
             if (coin.isBuy()) {
                 coinService.sell(coinService.getBalance());
                 coinRepository.updateSell();
                 log.info("sell");
+                sendDiscord(now + " 매도 " + currentPrice + " 수익률: " + ((currentPrice / coin.getPurchasePrice()) - 1) * 100);
             } else {
                 log.info("sell error");
             }
         } else if (status.contains("hold")) {
 
             Coin coin = coinRepository.findById(1L).get();
-            double currentPrice = Float.parseFloat(status.split(" ")[1]);
+            double currentPrice = Double.parseDouble(status.split(" ")[1]);
 
             if (((currentPrice / coin.getPurchasePrice()) - 1) * 100 <= -3.2 && coin.isBuy()) {
                 coinService.sell(coinService.getBalance());
                 coinRepository.updateSell();
                 log.info("stop loss");
+                sendDiscord(now + " 손절 " + currentPrice + " 수익률: " + ((currentPrice / coin.getPurchasePrice()) - 1) * 100);
             } else {
                 log.info("hold");
             }
@@ -88,7 +103,6 @@ public class CoinScheduler {
         String status = null;
         String line;
         while ((line = reader.readLine()) != null) {
-            log.info(line);
             status = line;
         }
 
@@ -103,5 +117,21 @@ public class CoinScheduler {
         process.destroy();
 
         return status;
+    }
+
+
+    public void sendDiscord(String text) {
+        JSONObject data = new JSONObject();
+        data.put("content", text);
+        send(data);
+    }
+
+    private void send(JSONObject object) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<String> entity = new HttpEntity<>(object.toString(), headers);
+        restTemplate.postForObject(url, entity, String.class);
     }
 }

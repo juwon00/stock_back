@@ -51,3 +51,16 @@ def minutes30_to_hours(file_path, candle):
     # 데이터 처리
     dates, opens, highs, lows, closes, volumes = process_data(data, candle)
     return dates, opens, highs, lows, closes, volumes
+
+
+def minutes60_to_hours(high, low, close, volume, time_60):
+    highs_list, lows_list, closes_list, volumes_list, dates_list = [], [], [], [], []
+
+    for i in range(0, len(high), 2):
+        highs_list.append(max(high[i], high[i + 1]))
+        lows_list.append(min(low[i], low[i + 1]))
+        closes_list.append(close[i + 1])
+        volumes_list.append(volume[i] + volume[i + 1])
+        dates_list.append(time_60[i])
+
+    return highs_list, lows_list, closes_list, volumes_list, dates_list

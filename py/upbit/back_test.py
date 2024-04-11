@@ -3,7 +3,7 @@ from pprint import pprint
 from upbit.tool import supplementary_indicator as si, minute30_to_hour as m30toh
 
 # CSV 파일 경로
-csv_file = 'data/data_2018~.csv'
+csv_file = 'coin_data/data_2018~.csv'
 
 # candle -  1:30분, 2:1시간, 4:2시간, 8:4시간, 48:1일 ...
 time_30, open_price, high_price, low_price, close_price, volume = m30toh.minutes30_to_hours(csv_file, 4)

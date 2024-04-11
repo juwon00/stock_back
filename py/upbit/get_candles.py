@@ -103,4 +103,4 @@ print(result)
 result = result.T
 print(result)
 
-np.savetxt('data/test.csv', result, delimiter=',', fmt='%s')
+np.savetxt('coin_data/test.csv', result, delimiter=',', fmt='%s')

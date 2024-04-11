@@ -1,7 +1,7 @@
 import csv
 from datetime import datetime
 
-csv_file = '../data/data_2018~.csv'
+csv_file = '../coin_data/data_2018~.csv'
 
 # 데이터를 저장할 리스트 초기화
 time_30 = []

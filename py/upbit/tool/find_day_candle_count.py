@@ -2,7 +2,7 @@ import csv
 from collections import defaultdict
 
 # 파일 경로
-file_path = "../data/data_2018~.csv"
+file_path = "../coin_data/data_2018~.csv"
 
 # 날짜별 데이터 개수를 저장할 딕셔너리
 daily_data_counts = defaultdict(int)
